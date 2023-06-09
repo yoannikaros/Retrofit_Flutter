@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
 import '../controller/api_service.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,39 +8,34 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late ApiService _apiService;
-  late TextEditingController _usernameController;
-  late TextEditingController _passwordController;
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _apiService = ApiService(Dio());
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
-  }
+  ApiService _apiService = ApiService.create();
 
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  void _login() async {
+    final response = await _apiService.login({
+      'username': _usernameController.text.trim(),
+      'password': _passwordController.text.trim(),
+    });
 
-  Future<void> _login() async {
-    try {
-      String username = _usernameController.text;
-      String password = _passwordController.text;
+    if (response.isSuccessful) {
+      final loginResponse = response.body;
+      // Proses respons login yang berhasil
+      print('Message: ${loginResponse['message']}');
+      print('User ID: ${loginResponse['userId']}');
+      print('Token: ${loginResponse['token']}');
 
-      LoginResponse response = await _apiService.login(username, password);
-
-      // Lakukan penanganan response sesuai kebutuhan aplikasi Anda
-      print(response.message);
-      print(response.userId);
-      print(response.token);
-    } catch (error) {
-      // Lakukan penanganan error sesuai kebutuhan aplikasi Anda
-      print(error.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(token: loginResponse['token']),
+        ),
+      );
+    } else {
+      final error = response.error;
+      // Proses penanganan kesalahan saat login gagal
+      print('Error: ${error.toString()}');
     }
   }
 
@@ -49,18 +43,19 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login Page'),
+        title: Text('Login'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
+            TextFormField(
               controller: _usernameController,
               decoration: InputDecoration(labelText: 'Username'),
             ),
-            TextField(
+            SizedBox(height: 16.0),
+            TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,

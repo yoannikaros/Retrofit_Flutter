@@ -13,8 +13,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Dio dio = Dio();
-    final ApiService apiService = ApiService(dio);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {

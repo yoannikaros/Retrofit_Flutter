@@ -1,35 +1,24 @@
-import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:chopper/chopper.dart';
+part 'api_service.chopper.dart';
 
-part 'api_service.g.dart';
+final String baseUrlku = 'http://192.168.100.208:4000';
 
-@RestApi(baseUrl: "http://192.168.100.111:4000/")
-abstract class ApiService {
-  factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
+@ChopperApi()
+abstract class ApiService extends ChopperService {
+  @Post(path: '/auth/login')
+  Future<Response<dynamic>> login(@Body() Map<String, dynamic> body);
 
-  @POST("auth/login")
-  @FormUrlEncoded()
-  Future<LoginResponse> login(
-    @Field("username") String username,
-    @Field("password") String password,
-  );
-}
+  @Get(path: '/users/{id}')
+  Future<Response<dynamic>> getDataById(
+      @Path('id') int id, @Header('Authorization') String token);
 
-@JsonSerializable()
-class LoginResponse {
-  String message;
-  int userId;
-  String token;
+  static ApiService create() {
+    final client = ChopperClient(
+      baseUrl: Uri.parse(baseUrlku), // Ganti dengan URL API yang valid
+      services: [_$ApiService()],
+      converter: JsonConverter(),
+    );
 
-  LoginResponse({
-    required this.message,
-    required this.userId,
-    required this.token,
-  });
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
+    return _$ApiService(client);
+  }
 }
