@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   void _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token'); // Menghapus token dari SharedPreferences
+    await prefs.remove('userId'); // Menghapus token dari SharedPreferences
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),

@@ -14,10 +14,11 @@ class _LoginPageState extends State<LoginPage> {
 
   ApiService _apiService = ApiService.create();
 
-  void _saveToken(String token) async {
+  void _saveToken(String token, int userId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('token', token);
+    await prefs.setInt('userId', userId);
   }
 
   void _login() async {
@@ -32,7 +33,8 @@ class _LoginPageState extends State<LoginPage> {
       print('Message: ${loginResponse['message']}');
       print('User ID: ${loginResponse['userId']}');
       print('Token: ${loginResponse['token']}');
-      _saveToken(loginResponse['token']);
+
+      _saveToken(loginResponse['token'], loginResponse['userId']);
 
       Navigator.push(
         context,
