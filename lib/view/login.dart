@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controller/api_service.dart';
 import 'home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,6 +13,12 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
 
   ApiService _apiService = ApiService.create();
+
+  void _saveToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('token', token);
+  }
 
   void _login() async {
     final response = await _apiService.login({
@@ -25,11 +32,15 @@ class _LoginPageState extends State<LoginPage> {
       print('Message: ${loginResponse['message']}');
       print('User ID: ${loginResponse['userId']}');
       print('Token: ${loginResponse['token']}');
+      _saveToken(loginResponse['token']);
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(token: loginResponse['token']),
+          builder: (context) => HomePage(
+            token: loginResponse['token'],
+            userid: loginResponse['userId'],
+          ),
         ),
       );
     } else {

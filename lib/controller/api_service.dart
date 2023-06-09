@@ -12,6 +12,10 @@ abstract class ApiService extends ChopperService {
   Future<Response<dynamic>> getDataById(
       @Path('id') int id, @Header('Authorization') String token);
 
+  @Post(path: '/users')
+  Future<Response<dynamic>> addUser(
+      @Header('Authorization') String token, @Body() Map<String, dynamic> body);
+
   static ApiService create() {
     final client = ChopperClient(
       baseUrl: Uri.parse(baseUrlku), // Ganti dengan URL API yang valid

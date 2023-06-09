@@ -46,4 +46,24 @@ class _$ApiService extends ApiService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> addUser(
+    String token,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/users');
+    final Map<String, String> $headers = {
+      'Authorization': token,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }
