@@ -28,10 +28,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    initData();
-  }
-
-  Future<void> initData() async {
     _getData();
   }
 
@@ -39,6 +35,13 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
     int userId = prefs.getInt('userId') ?? 0;
+
+    if (token.isEmpty || userId == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    }
 
     final response = await _apiService.getDataById(userId, 'Bearer ${token}');
 
