@@ -24,59 +24,46 @@ class _UpdatePageState extends State<UpdatePage> {
 
   void _update() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String token = prefs.getString('token') ?? '';
     int userId = prefs.getInt('userId') ?? 0;
 
-    final response = await _apiService.updateData(userId, 'Bearer ${token}', {
+    final response = await _apiService.updateData(userId, 'Bearer $token', {
       'username': _usernameController.text.trim(),
       'password': _passwordController.text.trim(),
     });
 
     if (response.isSuccessful) {
       final responseData = response.body;
-      // Proses respons setelah berhasil menambahkan pengguna baru
       print('Message: ${responseData['message']}');
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('User added successfully.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      _showAlertDialog('Success', 'User added successfully.', [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('OK'),
+        ),
+      ]);
     } else {
       final error = response.error;
-      // Proses penanganan kesalahan saat permintaan POST gagal
       print('Error: ${error.toString()}');
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to add user.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      _showAlertDialog('Error', 'Failed to add user.', [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('OK'),
+        ),
+      ]);
     }
+  }
+
+  void _showAlertDialog(String title, String content, List<Widget> actions) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: actions,
+        );
+      },
+    );
   }
 
   void _getData() async {
@@ -121,7 +108,7 @@ class _UpdatePageState extends State<UpdatePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, '/home');
               },
               child: Text('back'),
             ),

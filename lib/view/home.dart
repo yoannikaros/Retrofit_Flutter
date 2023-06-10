@@ -5,10 +5,7 @@ import 'new_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  final String token;
-  final int userid;
-
-  HomePage({required this.token, required this.userid});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -31,6 +28,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initData();
+  }
+
+  Future<void> initData() async {
     _getData();
   }
 
@@ -68,13 +69,7 @@ class _HomePageState extends State<HomePage> {
                   Text('Password: ${data['password']}'),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              NewUserPage(token: widget.token),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/create');
                     },
                     child: Text('Add User'),
                   ),
@@ -85,7 +80,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/update');
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/update', (route) => false);
                     },
                     child: Text('Update'),
                   ),

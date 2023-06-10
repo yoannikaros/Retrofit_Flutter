@@ -36,15 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
       _saveToken(loginResponse['token'], loginResponse['userId']);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(
-            token: loginResponse['token'],
-            userid: loginResponse['userId'],
-          ),
-        ),
-      );
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } else {
       final error = response.error;
       // Proses penanganan kesalahan saat login gagal

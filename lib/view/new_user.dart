@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/api_service.dart';
 
 class NewUserPage extends StatefulWidget {
-  final String token;
-
-  NewUserPage({required this.token});
+  const NewUserPage({Key? key}) : super(key: key);
 
   @override
   _NewUserPageState createState() => _NewUserPageState();
@@ -17,7 +16,11 @@ class _NewUserPageState extends State<NewUserPage> {
   ApiService _apiService = ApiService.create();
 
   void _addUser() async {
-    final response = await _apiService.addUser('Bearer ${widget.token}', {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    int userId = prefs.getInt('userId') ?? 0;
+
+    final response = await _apiService.addUser('Bearer ${token}', {
       'username': _usernameController.text.trim(),
       'password': _passwordController.text.trim(),
     });
