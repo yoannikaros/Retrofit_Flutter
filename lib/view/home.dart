@@ -35,8 +35,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _getData() async {
-    final response =
-        await _apiService.getDataById(widget.userid, 'Bearer ${widget.token}');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    int userId = prefs.getInt('userId') ?? 0;
+
+    final response = await _apiService.getDataById(userId, 'Bearer ${token}');
 
     if (response.isSuccessful) {
       setState(() {
@@ -79,6 +82,12 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton(
                     onPressed: _logout,
                     child: Text('Keluar'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/update');
+                    },
+                    child: Text('Update'),
                   ),
                 ],
               )

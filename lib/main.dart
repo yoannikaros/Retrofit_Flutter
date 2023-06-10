@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:original/view/login.dart';
+import 'package:original/view/update_page.dart';
 
 import 'controller/api_service.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginPage(),
+        '/update': (context) => UpdatePage(),
       },
     );
   }
